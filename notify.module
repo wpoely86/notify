@@ -325,6 +325,23 @@ function _notify_content($node, $notify) {
 }
 
 /**
+ * Format HTML version of outgoing mail
+ */
+function _notify_content_html ($node, $notify) {
+  
+  switch ($notify->teasers) {
+    case 0:
+      return;
+    case 1:
+      return check_markup($node->teaser, $node->format, FALSE);
+      break;
+    case 2:
+      return check_markup($node->body, $node->format, FALSE);
+  }  
+  
+}
+
+/**
  * Helper function to send the notification email.
  * 
  * TODO: Needs some cleanup and themability.
@@ -508,7 +525,13 @@ function _notify_entity_to_utf8($hex, $codepoint) {
 function _notify_mail_urls($url = 0) {
   static $urls = array();
   if ($url) {
-    $urls[] = strpos($url, '://') ? $url : url($url, NULL, NULL, 1);
+    if (strpos($url, '://')) {
+      $urls[] = $url;
+    } elseif (strpos($url, '/')==0) {
+      $urls[] = url(substr($url,1) , NULL, NULL, TRUE);
+    } else {
+      $urls[] = url($url, NULL, NULL, TRUE);
+    }
     return count($urls);
   }
   return $urls;
