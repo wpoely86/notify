@@ -153,50 +153,54 @@ function notify_menu($may_cache) {
  */
 function notify_user_settings_form($uid = 0) {
   global $user;
-
-  $account = user_load(array('uid' => $uid));
-  if ($account === FALSE) {
+  if ($user->uid != $arg->uid && $user->uid != 1) {
+    drupal_access_denied();
+    return;
+  }
+  
+  $account = user_load(array('uid' => $arg->uid));
+  if (!is_object($account)) {
     drupal_not_found();
     return;
   }
 
+
   $result = db_query('SELECT u.uid, u.name, u.mail, n.status, n.node, n.teasers, n.comment FROM {users} u LEFT JOIN {notify} n ON u.uid = n.uid WHERE u.uid = %d AND u.status = 1', $account->uid);
   $notify = db_fetch_object($result);
   $form = array();
-  if ($notify->mail) {
-    $form['notify_page_master'] = array('#type' => 'fieldset', '#title' => t('Master switch'));
-    $form['notify_page_master']['status'] = array('#type' => 'radios',
-      '#title' => t('Notify status'),
-      '#default_value' => $notify->status,
-      '#options' =>  array(t('Disabled'), t('Enabled')),
-      '#description' => t('Do you wish to receive periodic e-mails when new content is posted?'),
-    );
+  if (!$notify->mail) {
+        drupal_set_message(t('Your e-mail address must be specified on your <a href="@url">my account</a> page.', array('@url' => url('user/'. $notify->uid .'/edit'))), 'error');
+  }
 
-    $form['notify_page_detailed'] = array('#type' => 'fieldset', '#title' => t('Detailed settings'));
-    $form['notify_page_detailed']['node'] = array('#type' => 'radios',
-      '#title' => t('Notify new content'),
-      '#default_value' => $notify->node,
-      '#options' => array(t('Disabled'), t('Enabled')),
-      '#description' => t('Include new content in the notification mail.'),
-    );
-    $form['notify_page_detailed']['teasers'] = array('#type' => 'radios',
-      '#title' => t('Content'),
-      '#default_value' => $notify->teasers,
-      '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body')),
-      '#description' => t('Select the amount of each post that you would like to see in your notification e-mails.'),
-    );
-    $form['notify_page_detailed']['comment'] = array('#type' => 'radios',
-      '#title' => t('Notify new comments'),
-      '#default_value' => $notify->comment,
-      '#options' => array(t('Disabled'), t('Enabled')),
-      '#description' => t('Include new comments in the notification mail.'),
-    );
-    $form['uid'] = array('#type' => 'value', '#value' => $account->uid);
-    $form['submit'] = array('#type' => 'submit', '#value' => t('Save settings'));
-  }
-  else {
-    drupal_set_message(t('Your e-mail address must be specified on your <a href="@url">my account</a> page.', array('@url' => url('user/'. $notify->uid .'/edit'))), 'error');
-  }
+  $form['notify_page_master'] = array('#type' => 'fieldset', '#title' => t('Master switch'));
+  $form['notify_page_master']['status'] = array('#type' => 'radios',
+    '#title' => t('Notify status'),
+    '#default_value' => $notify->status,
+    '#options' =>  array(t('Disabled'), t('Enabled')),
+    '#description' => t('Do you wish to receive periodic e-mails when new content is posted?'),
+  );
+
+  $form['notify_page_detailed'] = array('#type' => 'fieldset', '#title' => t('Detailed settings'));
+  $form['notify_page_detailed']['node'] = array('#type' => 'radios',
+    '#title' => t('Notify new content'),
+    '#default_value' => $notify->node,
+    '#options' => array(t('Disabled'), t('Enabled')),
+    '#description' => t('Include new content in the notification mail.'),
+  );
+  $form['notify_page_detailed']['teasers'] = array('#type' => 'radios',
+    '#title' => t('Content'),
+    '#default_value' => $notify->teasers,
+    '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body')),
+    '#description' => t('Select the amount of each post that you would like to see in your notification e-mails.'),
+  );
+  $form['notify_page_detailed']['comment'] = array('#type' => 'radios',
+    '#title' => t('Notify new comments'),
+    '#default_value' => $notify->comment,
+    '#options' => array(t('Disabled'), t('Enabled')),
+    '#description' => t('Include new comments in the notification mail.'),
+  );
+  $form['uid'] = array('#type' => 'value', '#value' => $account->uid);
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Save settings'));
 
   return $form;
 }
