@@ -557,12 +557,19 @@ function _notify_switch_user($uid = NULL) {
   static $orig_user = array();
 
   if (isset($uid)) {
+    // Should a user visit cron.php, or should this module be invoked via 
+    // poormanscron and _notify_send() does not complete,
+    // the visitor will end up logged in as the "switched to user" for 
+    // subsequent requests unless we disable saving the session
+    // until we are sure we're the invoking user again.
+    session_save_session(FALSE);
     $user = user_load(array('uid' => $uid));
   }
   // Retrieve the initial user, can be called multiple times.
   else if (count($orig_user)) {
     $user = array_shift($orig_user);
     array_unshift($orig_user, $user);
+    session_save_session(TRUE);
   }
   // Store the initial user.
   else {
