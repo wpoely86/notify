@@ -185,8 +185,8 @@ function notify_menu() {
     'title' => 'Notification settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('notify_user_settings_form', 1),
-    'access callback' => 'user_access',
-    'access arguments' => array('access notify'),
+    'access callback' => 'notify_user_access',
+    'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK
   );
   $items['admin/user/user/notify'] = array(
@@ -200,7 +200,21 @@ function notify_menu() {
 
   return $items;
 }
-  
+
+/**
+ * Checks access to notifications settings tab
+ */
+function notify_user_access($account = NULL)
+{
+  return $account->uid &&
+    (
+      // Always let users view their own profile.
+      ($GLOBALS['user']->uid == $account->uid && user_access('access notify'))  ||
+      // Administrators can view all accounts.
+      user_access('administer notify')
+    );
+}
+
   /**
   * Register the themeing the form data into a table at
   * admin/user/user/notify
@@ -220,7 +234,7 @@ function notify_menu() {
  */
 function notify_user_settings_form(&$form_state, $arg) {
   global $user;
-  if ($user->uid != $arg->uid && $user->uid != 1) {
+  if ($user->uid != $arg->uid && !user_access('administer notify') ) {
     drupal_access_denied();
     return;
   }
