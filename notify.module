@@ -498,7 +498,7 @@ function _notify_send() {
       // Prepend node e-mail header as long as user could access at least one node.
       if ($node_count > 0) {
         $node_body = $separator ."\n"
-          . t('Recent content - !count', array('!count' => format_plural(count($nodes), '1 new post', count($nodes) .' new posts'))) ."\n"
+          . t('Recent content - !count', array('!count' => format_plural(count($nodes), '1 new post', '@count new posts'))) ."\n"
           . $separator ."\n\n". $node_body;
       }
     }
@@ -521,7 +521,7 @@ function _notify_send() {
         if ($comment_body) {
           $comment_body .= $mini_separator ."\n\n";
         }
-        $comment_body .= t('!count attached to !type posted by !author: !title', array('!count' => format_plural(count($comment), '1 new comment', '!count new comments'), '!title' => $nodes[$nid]->title, '!type' => node_get_types('name', $nodes[$nid]), '!author' => $nodes[$nid]->name ? $nodes[$nid]->name : variable_get('anonymous', 'Anonymous'))) ."\n";
+        $comment_body .= t('!count attached to !type posted by !author: !title', array('!count' => format_plural(count($comment), '1 new comment', '@count new comments'), '!title' => $nodes[$nid]->title, '!type' => node_get_types('name', $nodes[$nid]), '!author' => $nodes[$nid]->name ? $nodes[$nid]->name : variable_get('anonymous', 'Anonymous'))) ."\n";
 
         $comment_count = 0;
         foreach ($comment as $c) {
@@ -533,7 +533,7 @@ function _notify_send() {
 
       if ($total_comment_count > 0) {
         $comment_body = $separator ."\n"
-          . t('Recent comments - !count', array('!count' => format_plural($total_comment_count, '1 new comment', '!count new comments'))) ."\n"
+          . t('Recent comments - !count', array('!count' => format_plural($total_comment_count, '1 new comment', '@count new comments'))) ."\n"
           . $separator ."\n\n". $comment_body;
       }
     }
