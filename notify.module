@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 define('NOTIFY_NODE_TYPE', 'notify_node_type_');
 

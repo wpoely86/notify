@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function notify_schema() {
   $schema['notify'] = array(
