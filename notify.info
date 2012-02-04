@@ -4,4 +4,4 @@ package = Mail
 core = 7.x
 files[] = notify.install
 files[] = notify.module
-configure = admin/config/notify
+configure = admin/config/people/notify
