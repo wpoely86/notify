@@ -151,7 +151,6 @@ function notify_user_cancel($edit, $account, $method) {
  * Implements hook_form_FORM_ID_alter()
  */
 function notify_form_user_register_form_alter(&$form, &$form_state, $form_id) {
-  dpm($form);
   $form += _notify_user_reg_fields();
 }
 
@@ -414,12 +413,10 @@ function notify_admin_users($form, &$form_state) {
   foreach ($uresult as $user) {
     $form['users'][$user->uid] = array();
     $form['users'][$user->uid]['name'] = array(
-      '#type' => 'markup',
-      '#value' => theme('username', array('account' => $user)),
+      '#markup' => theme('username', array('account' => $user)),
     );
     $form['users'][$user->uid]['mail'] = array(
-      '#type' => 'markup',
-      '#value' => $user->mail,
+      '#markup' => $user->mail,
     );
     $form['users'][$user->uid]['node'] = array(
       '#type' => 'checkbox',
