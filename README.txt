@@ -51,7 +51,8 @@ Rob Barreca <rob@electronicinsight.com> was a previous maintainer.
 
 Matt Chapman <matt@ninjitsuweb.com> is the current maintainer.
 
-Ishmael Sanchez (http://ishmaelsanchez.com) and
+Ishmael Sanchez (http://ishmaelsanchez.com),
+Ward Poelmans <wpoely86@gmail.com> and
 John Oltman <john.oltman@sitebasin.com> co-developed the Drupal 7 port.
 
 ------------------------

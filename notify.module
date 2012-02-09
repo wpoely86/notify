@@ -309,8 +309,8 @@ function notify_user_settings_form($form, &$form_state, $arg) {
   }
 
   $result = db_query('SELECT u.uid, u.name, u.mail, n.status, n.node, n.teasers, n.comment FROM {users} u LEFT JOIN {notify} n ON u.uid = n.uid WHERE u.uid = :uid AND u.status = :status', array(':uid' => $account->uid, ':status' => 1));
-  foreach ($result as $notify) {
-  }
+  $notify = $result->fetchObject();
+
   $form = array();
   if (!$notify->mail) {
     drupal_set_message(t('Your e-mail address must be specified on your <a href="@url">my account</a> page.', array('@url' => url('user/' . $account->uid . '/edit'))), 'error');
@@ -343,7 +343,7 @@ function notify_user_settings_form($form, &$form_state, $arg) {
     '#type' => 'radios',
     '#title' => t('Content'),
     '#default_value' => $notify->teasers,
-    '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body')),
+    '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body'), t('Title + Body + Fields')),
     '#description' => t('Select the amount of each post that you would like to see in your notification e-mails.'),
   );
   $form['notify_page_detailed']['comment'] = array(
@@ -425,7 +425,7 @@ function notify_admin_users($form, &$form_state) {
     $form['users'][$user->uid]['teasers'] = array(
       '#type' => 'select',
       '#default_value' => $user->teasers,
-      '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body')),
+      '#options' => array(t('Title only'), t('Title + Teaser'), t('Title + Body'), t('Title + Body + Fields')),
     );
     $form['users'][$user->uid]['comment'] = array(
       '#type' => 'checkbox',
@@ -528,7 +528,6 @@ function theme_notify_admin_users($variables) {
  * Formatting of outgoing mail, taken from mail.inc, part of project.module
  */
 function _notify_content($node, $notify) {
-  static $i = 0;
   $txt = '';
 
   switch ($notify->teasers) {
@@ -544,6 +543,17 @@ function _notify_content($node, $notify) {
       $content = node_view($node,'full');
       if (isset($content['body'][0]['#markup'])) {
         $txt = $content['body'][0]['#markup'];
+      }
+      break;
+    case 3:
+      $content = node_view($node,'full');
+      // run of all children so that every attacked field is also included
+      $children = element_children($content, TRUE);
+
+      foreach($children as $child)
+      {
+	  $txt .= drupal_render($content[$child]);
+	  $txt .= '<p> </p>'; // some space between the fields
       }
   }
 
