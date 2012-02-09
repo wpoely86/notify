@@ -63,37 +63,37 @@ function notify_admin_settings($form, &$form_state) {
 
   $form['notify_settings']['notify_send'] = array(
     '#type' => 'select',
-    '#title' => 'Send notifications every',
+    '#title' => t('Send notifications every'),
     '#default_value' => variable_get('notify_send', array(86400)),
     '#options' => $period,
-    '#description' => 'How often should new content notifications be sent? Requires cron to be running at least this often.',
+    '#description' => t('How often should new content notifications be sent? Requires cron to be running at least this often.'),
   );
 
   $form['notify_settings']['notify_send_hour'] = array(
     '#type' => 'select',
-    '#title' => 'Hour to Send Notifications',
-    '#description' => 'Specify the hour (24-hour clock) in which notifications should be sent, if the frequency is one day or greater.',
+    '#title' => t('Hour to Send Notifications'),
+    '#description' => t('Specify the hour (24-hour clock) in which notifications should be sent, if the frequency is one day or greater.'),
     '#default_value' => variable_get('notify_send_hour', 9),
     '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23),
   );
 
   $form['notify_settings']['notify_attempts'] = array(
     '#type' => 'select',
-    '#title' => 'Number of failed sends after which notifications are disabled',
+    '#title' => t('Number of failed sends after which notifications are disabled'),
     '#default_value' => variable_get('notify_attempts', array(5)),
     '#options' => array(t('Disabled'), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20),
   );
 
   $form['notify_settings']['notify_reg_default'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Notification checkbox default on new user registration form',
+    '#title' => t('Notification checkbox default on new user registration form'),
     '#return_value' => 1,
     '#default_value' => variable_get('notify_reg_default', 1),
   );
 
   $form['notify_settings']['notify_include_updates'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Include updated posts in notifications',
+    '#title' => t('Include updated posts in notifications'),
     '#return_value' => 1,
     '#default_value' => variable_get('notify_include_updates', 1),
   );
@@ -101,10 +101,10 @@ function notify_admin_settings($form, &$form_state) {
   $set = 'ntype';
   $form[$set] = array(
     '#type' => 'fieldset',
-    '#title' => 'Notification by node type',
+    '#title' => t('Notification by node type'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-    '#description' => 'Having nothing checked defaults to sending notifications about all node types.',
+    '#description' => t('Having nothing checked defaults to sending notifications about all node types.'),
   );
 
   foreach (node_type_get_types() as $type => $object) {
@@ -195,7 +195,7 @@ function _notify_user_reg_fields() {
   // Add the checkbox to the fieldset
   $fields['notify_agree']['notify_decision'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Receive email notifications of new content posted to this site. Notifications are sent every ' . format_interval($period) . '.'),
+    '#title' => t('Receive email notifications of new content posted to this site. Notifications are sent every @interval.', array('@interval' => format_interval($period))),
     '#return_value' => 1,
     '#default_value' => variable_get('notify_reg_default', 1),
   );
@@ -211,11 +211,11 @@ function notify_permission() {
   return array(
     'access notify' => array(
       'title' => t('access notify'),
-      'description' => t('TODO Add a description for \'access notify\''),
+      'description' => t('Allow user to setup and receive notifications when there is new content'),
     ),
     'administer notify' => array(
       'title' => t('administer notify'),
-      'description' => t('TODO Add a description for \'administer notify\''),
+      'description' => t('Administer the notify module'),
     ),
   );
 }
@@ -229,8 +229,8 @@ function notify_menu() {
   $items = array();
 
   $items['admin/config/people/notify'] = array(
-    'title' => 'Notification settings',
-    'description' => 'Adjust settings for new content notifications sent by e-mail.',
+    'title' => t('Notification settings'),
+    'description' => t('Adjust settings for new content notifications sent by e-mail.'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('notify_admin_settings'),
     'access callback' => 'user_access',
@@ -238,12 +238,12 @@ function notify_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/config/people/notify/settings'] = array(
-    'title' => 'Settings',
+    'title' => t('Settings'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
   $items['admin/config/people/notify/users'] = array(
-    'title' => 'Users',
+    'title' => t('Users'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('notify_admin_users'),
     'access callback' => 'user_access',
@@ -251,7 +251,7 @@ function notify_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['user/%user/notify'] = array(
-    'title' => 'Notification settings',
+    'title' => t('Notification settings'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('notify_user_settings_form', 1),
     'access callback' => 'notify_user_access',
