@@ -552,8 +552,11 @@ function _notify_content($node, $notify) {
 
       foreach($children as $child)
       {
-	  $txt .= drupal_render($content[$child]);
-	  $txt .= '<p> </p>'; // some space between the fields
+	  if(isset($content[$child]['#title']) && isset($content[$child][0]['#markup']))
+	  {
+	      $txt .= $content[$child]['#title'] . ': ';
+	      $txt .= $content[$child][0]['#markup'] . "\n\n";
+	  }
       }
   }
 
