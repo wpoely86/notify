@@ -775,7 +775,7 @@ function notify_mail($key, &$message, $params) {
   global $user;
 
   $message['headers']['MIME-Version'] = '1.0';
-  $message['headers']['Content-Type'] = 'text/plain';
+  $message['headers']['Content-Type'] = 'text/plain;charset=utf-8';
 
   $message['subject'] = t('!sitename new content notification for !username', array('!username' => $user->name, '!sitename' => variable_get('site_name', 'Drupal')));
   $message['body'][] = t('Greetings !user,', array('!user' => $user->name)) . "\n\n";
