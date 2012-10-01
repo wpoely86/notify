@@ -140,8 +140,6 @@ function notify_cron() {
  * Implements hook_user_cancel().
  */
 function notify_user_cancel($edit, $account, $method) {
-  // TODO Please review the conversion of this statement to the D7 database API syntax.
-  /* db_query('DELETE FROM {notify} WHERE uid = %d', $user->uid) */
   db_delete('notify')
   ->condition('uid', $user->uid)
   ->execute();
@@ -159,8 +157,6 @@ function notify_form_user_register_form_alter(&$form, &$form_state, $form_id) {
  */
 function notify_user_insert(&$edit, $account, $category) {
   if (isset($edit['notify_decision']) && $edit['notify_decision'] == 1) {
-    // TODO Please review the conversion of this statement to the D7 database API syntax.
-    /* db_query('INSERT INTO {notify} (uid, status, node, teasers, comment) VALUES (%d, %d, %d, %d, %d)', $user->uid, 1, 1, 0, 0) */
     db_insert('notify')
       ->fields(array(
       'uid' => $account->uid,
@@ -366,18 +362,14 @@ function notify_user_settings_form($form, &$form_state, $arg) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Submit for the notify_user_settings form
  */
 function notify_user_settings_form_submit($form, &$form_state) {
   unset($form);
-  // TODO Please review the conversion of this statement to the D7 database API syntax.
-  /* db_query('DELETE FROM {notify} WHERE uid = %d', $form_state['values']['uid']) */
   db_delete('notify')
     ->condition('uid', $form_state['values']['uid'])
     ->execute();
-  // TODO Please review the conversion of this statement to the D7 database API syntax.
-  /* db_query('INSERT INTO {notify} (uid, status, node, teasers, comment) VALUES (%d, %d, %d, %d, %d)', $form_state['values']['uid'], $form_state['values']['status'], $form_state['values']['node'], $form_state['values']['teasers'], $form_state['values']['comment']) */
+
   $id = db_insert('notify')
     ->fields(array(
     'uid' => $form_state['values']['uid'],
@@ -461,8 +453,6 @@ function notify_admin_users_submit($form, &$form_state) {
 
   if ($form_state['values']['users']) {
     foreach ($form_state['values']['users'] as $uid => $settings) {
-      // TODO Please review the conversion of this statement to the D7 database API syntax.
-      /* db_query('UPDATE {notify} SET node = %d, teasers = %d, comment = %d, attempts = %d WHERE uid = %d', $settings['node'], $settings['teasers'], $settings['comment'], $settings['attempts'], $uid) */
       db_update('notify')
   ->fields(array(
         'node' => $settings['node'],
