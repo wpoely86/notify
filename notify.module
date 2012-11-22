@@ -145,6 +145,7 @@ function notify_cron() {
  * Implements hook_user_cancel().
  */
 function notify_user_cancel($edit, $account, $method) {
+  global $user;
   db_delete('notify')
   ->condition('uid', $user->uid)
   ->execute();
